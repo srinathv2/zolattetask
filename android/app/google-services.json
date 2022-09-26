@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "17517939700",
+    "project_id": "zolattetask",
+    "storage_bucket": "zolattetask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17517939700:android:a14e16c1e869b56bb047a1",
+        "android_client_info": {
+          "package_name": "com.example.zolattetask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17517939700-aceckjiglq1hqt29ah1in0pppm0ghir6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd6Tmrpl6Fbkxta_4pey6aMKELZFWwz4I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17517939700-aceckjiglq1hqt29ah1in0pppm0ghir6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
