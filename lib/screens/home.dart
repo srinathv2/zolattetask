@@ -103,21 +103,30 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     print('${userDataLoading},${userExistsLoading}');
     if (userDataLoading || userExistsLoading) {
-      return CircularProgressIndicator();
+      return SizedBox(
+          child: Center(child: CircularProgressIndicator()),
+          width: 100,
+          height: 100);
     } else {
       if (!usernotexists) {
         return MaterialApp(
           home: SafeArea(
             child: Scaffold(
-              drawer: Drawer(child: Column(children: [
-                ElevatedButton(onPressed: (){
-                  Navigator.pushNamed(context, '/logout');
-                }, child: Text('Logout')),
-                ElevatedButton(onPressed: (){
-                  Navigator.pushNamed(context, '/delete');
-                }, child: Text('Delete'))
-          
-              ],)),
+              drawer: Drawer(
+                  child: Column(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/logout');
+                      },
+                      child: Text('Logout')),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/delete');
+                      },
+                      child: Text('Delete'))
+                ],
+              )),
               body: Center(
                 child: Form(
                     key: _formKey,
@@ -130,26 +139,41 @@ class _HomeState extends State<Home> {
                           backgroundColor: Colors.transparent,
                           child: ClipOval(child: Image.network(userimage)),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Username:- ' + username,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20)),
-                            Text('Usermail:- ' + usermail,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20)),
-                            Text('Age:- ' + age,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20)),
-                            Text('Phonenumber:- ' + phonenumber,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20)),
-                            Text('Address:- ' + address,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20)),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Username:- ' + username,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20)),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text('Usermail:- ' + usermail,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20)),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text('Age:- ' + age,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20)),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text('Phonenumber:- ' + phonenumber,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20)),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text('Address:- ' + address,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 20)),
+                            ],
+                          ),
                         ),
                         Container(
                           margin: EdgeInsets.all(30),
