@@ -23,13 +23,12 @@ class _HomeState extends State<Home> {
   var dropdownvalue, x, y;
   var items = new List<String>.generate(100, (i) => (i + 1).toString());
   final FirebaseAuth auth = FirebaseAuth.instance;
-  var username, userdname, address, age, phonenumber, usermail;
+  var username, userdname, address, age, phonenumber, usermail, tapIndex = 0;
   var userimage;
   var userDataLoading = true, userExistsLoading = true;
   late bool usernotexists;
 
   snapshot() async {
-    print('snapshot');
     setState(() {
       userDataLoading = true;
     });
@@ -44,7 +43,6 @@ class _HomeState extends State<Home> {
   }
 
   getUserData(DocumentSnapshot<Map<String, dynamic>> data) async {
-    print('getuserdata');
     var ud = data.data();
     setState(() {
       username = ud?["username"];
@@ -57,13 +55,10 @@ class _HomeState extends State<Home> {
   }
 
   checkExists() async {
-    print('checkexists');
     setState(() {
       userExistsLoading = true;
     });
     try {
-      print('try checkexists');
-
       final User? user = auth.currentUser;
 
       await FirebaseFirestore.instance
@@ -73,13 +68,9 @@ class _HomeState extends State<Home> {
           .then((value) {
         setState(() {
           usernotexists = value.data()!.isEmpty;
-          // print('&&&&&&${userexists}');
           userExistsLoading = false;
         });
       });
-
-      // .then((value) => {userexists = value.exists});
-
     } catch (e) {
       setState(() {
         usernotexists = true;
@@ -101,7 +92,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    print('${userDataLoading},${userExistsLoading}');
     if (userDataLoading || userExistsLoading) {
       return SizedBox(
           child: Center(child: CircularProgressIndicator()),
@@ -112,21 +102,28 @@ class _HomeState extends State<Home> {
         return MaterialApp(
           home: SafeArea(
             child: Scaffold(
-              drawer: Drawer(
-                  child: Column(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/logout');
-                      },
-                      child: Text('Logout')),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/delete');
-                      },
-                      child: Text('Delete'))
+              bottomNavigationBar: BottomNavigationBar(
+                items: [
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.logout), label: 'Logout'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.delete), label: 'Delete Account')
                 ],
-              )),
+                showUnselectedLabels: true,
+                backgroundColor: Colors.black,
+                unselectedItemColor: Colors.white,
+                currentIndex: tapIndex,
+                onTap: (value) {
+                  if (value == 0) {
+                    Navigator.pushNamed(context, '/logout');
+                  } else if (value == 1) {
+                    Navigator.pushNamed(context, '/delete');
+                  }
+                  setState(() {
+                    tapIndex = value;
+                  });
+                },
+              ),
               body: Center(
                 child: Form(
                     key: _formKey,
@@ -187,12 +184,12 @@ class _HomeState extends State<Home> {
                               labelStyle:
                                   TextStyle(color: Colors.black, fontSize: 30),
                             ),
-                            validator: ((value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            }),
+                            // validator: ((value) {
+                            //   if (value == null || value.isEmpty) {
+                            //     return 'Please enter some text';
+                            //   }
+                            //   return null;
+                            // }),
                           ),
                         ),
                         Container(
@@ -208,13 +205,12 @@ class _HomeState extends State<Home> {
                                   TextStyle(color: Colors.black, fontSize: 30),
                             ),
                             validator: ((value) {
-                              if (value == null ||
-                                  value.length < 10 ||
-                                  value.length > 10 ||
-                                  !value.contains(RegExp(r'[0-9]'))) {
+                              if (value == '') {
+                                return null;
+                              } else if (!RegExp(r'^(?:[+0]9)?[0-9]{10,12}$')
+                                  .hasMatch(value!)) {
                                 return 'Please enter valid phone number';
                               }
-                              return null;
                             }),
                           ),
                         ),
@@ -265,9 +261,14 @@ class _HomeState extends State<Home> {
                                     "username": user?.displayName,
                                     "usermail": user?.email,
                                     "userid": uid,
-                                    "address": addressController.text,
-                                    "phonenumber": phoneNumberController.text,
-                                    "age": dropdownvalue
+                                    "address": addressController.text == ''
+                                        ? address
+                                        : addressController.text,
+                                    "phonenumber":
+                                        phoneNumberController.text == ''
+                                            ? phonenumber
+                                            : phoneNumberController.text,
+                                    "age": dropdownvalue ?? age
                                   });
                                   snapshot();
                                 }
@@ -290,7 +291,6 @@ class _HomeState extends State<Home> {
       } else {
         return MaterialApp(
           home: Scaffold(
-            drawer: Drawer(),
             body: Center(
               child: Form(
                   key: _formKey,
@@ -318,7 +318,7 @@ class _HomeState extends State<Home> {
                                 TextStyle(color: Colors.black, fontSize: 30),
                           ),
                           validator: ((value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == '') {
                               return 'Please enter some text';
                             }
                             return null;
@@ -338,10 +338,9 @@ class _HomeState extends State<Home> {
                                 TextStyle(color: Colors.black, fontSize: 30),
                           ),
                           validator: ((value) {
-                            if (value == null ||
-                                value.length < 10 ||
-                                value.length > 10 ||
-                                !value.contains(RegExp(r'[0-9]'))) {
+                            if (value == '' ||
+                                !RegExp(r'^(?:[+0]9)?[0-9]{10,12}$')
+                                    .hasMatch(value!)) {
                               return 'Please enter valid phone number';
                             }
                             return null;
@@ -405,7 +404,10 @@ class _HomeState extends State<Home> {
                                 });
                               }
                             },
-                            child: Text('Submit')),
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
                       )
                     ],
                   )),
