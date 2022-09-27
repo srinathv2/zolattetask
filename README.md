@@ -10,4 +10,4 @@ this app implements all the tasks such as
 - On 1  screen There is a delete button -- on clicking the persons data gets deleted from firebase, back button to takes to homescreen
 - On logging back in all the info entered/saved previously should show up
 
-so this app contains all CRUD operations using firebase
+so this app implements all CRUD operations using firebase
