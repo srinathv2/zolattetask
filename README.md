@@ -1,17 +1,13 @@
 # zolattetask
 
-A new Flutter project.
+this app implements all the tasks such as
 
-## Getting Started
+- A user can login via gmail
+- On logging in -- the screen shows up with their email id and all info that can be received from gmail, a user entry is created in firebase
+- Homescreen -- have text input boxes with address, phone number, age dropdown, free text box, (add validations wherever necessary) whatever text user enters is stored in firebase
+- Menu to have option to navigate to 2 different screens
+- On 1  screen There is a logout button -- on clicking the person can logout, back button to takes to homescreen
+- On 1  screen There is a delete button -- on clicking the persons data gets deleted from firebase, back button to takes to homescreen
+- On logging back in all the info entered/saved previously should show up
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# zolattetask
+so this app contains all CRUD operations using firebase
