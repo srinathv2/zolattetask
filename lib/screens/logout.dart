@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zolattetask/FirebaseServices.dart';
-import 'package:zolattetask/main.dart';
 
 class Logout extends StatefulWidget {
   const Logout({super.key});

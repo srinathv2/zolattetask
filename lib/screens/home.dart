@@ -1,12 +1,6 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:zolattetask/screens/delete.dart';
-import 'package:zolattetask/screens/logout.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -124,54 +118,191 @@ class _HomeState extends State<Home> {
                   });
                 },
               ),
-              body: Center(
+              body: SingleChildScrollView(
+                child: Center(
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.transparent,
+                            child: ClipOval(child: Image.network(userimage)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Username:- ' + username,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text('Usermail:- ' + usermail,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text('Age:- ' + age,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text('Phonenumber:- ' + phonenumber,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text('Address:- ' + address,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20)),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.all(30),
+                            width: 400,
+                            height: 50,
+                            child: TextFormField(
+                              controller: addressController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Address',
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 30),
+                              ),
+                              // validator: ((value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Please enter some text';
+                              //   }
+                              //   return null;
+                              // }),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.all(30),
+                            width: 400,
+                            height: 50,
+                            child: TextFormField(
+                              controller: phoneNumberController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Phone Number',
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 30),
+                              ),
+                              validator: ((value) {
+                                if (value == '') {
+                                  return null;
+                                } else if (!RegExp(r'^(?:[+0]9)?[0-9]{10,12}$')
+                                    .hasMatch(value!)) {
+                                  return 'Please enter valid phone number';
+                                }
+                              }),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.all(30),
+                            width: 400,
+                            height: 50,
+                            child: InputDecorator(
+                              decoration: InputDecoration(
+                                labelText: 'Age',
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 30),
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.all(13),
+                              ),
+                              child: DropdownButton(
+                                value: dropdownvalue,
+                                isDense: true,
+                                isExpanded: true,
+                                elevation: 8,
+                                icon: const Icon(Icons.keyboard_arrow_down),
+                                items: items.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Text(items),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    dropdownvalue = newValue;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 100,
+                            height: 50,
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    final User? user = auth.currentUser;
+                                    final uid = user?.uid;
+                                    FirebaseFirestore.instance
+                                        .collection('usersData')
+                                        .doc(uid)
+                                        .set({
+                                      "username": user?.displayName,
+                                      "usermail": user?.email,
+                                      "userid": uid,
+                                      "address": addressController.text == ''
+                                          ? address
+                                          : addressController.text,
+                                      "phonenumber":
+                                          phoneNumberController.text == ''
+                                              ? phonenumber
+                                              : phoneNumberController.text,
+                                      "age": dropdownvalue ?? age
+                                    });
+                                    snapshot();
+                                  }
+                                },
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )),
+                          )
+                        ],
+                      )),
+                ),
+              ),
+              appBar: AppBar(
+                title: Text('Welcome'),
+                centerTitle: true,
+              ),
+            ),
+          ),
+        );
+      } else {
+        return MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: Center(
                 child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.transparent,
                           child: ClipOval(child: Image.network(userimage)),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Username:- ' + username,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20)),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text('Usermail:- ' + usermail,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20)),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text('Age:- ' + age,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20)),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text('Phonenumber:- ' + phonenumber,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20)),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text('Address:- ' + address,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20)),
-                            ],
-                          ),
-                        ),
+                        Text(userdname,
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 30)),
                         Container(
                           margin: EdgeInsets.all(30),
                           width: 400,
@@ -184,12 +315,12 @@ class _HomeState extends State<Home> {
                               labelStyle:
                                   TextStyle(color: Colors.black, fontSize: 30),
                             ),
-                            // validator: ((value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Please enter some text';
-                            //   }
-                            //   return null;
-                            // }),
+                            validator: ((value) {
+                              if (value == '') {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            }),
                           ),
                         ),
                         Container(
@@ -205,12 +336,12 @@ class _HomeState extends State<Home> {
                                   TextStyle(color: Colors.black, fontSize: 30),
                             ),
                             validator: ((value) {
-                              if (value == '') {
-                                return null;
-                              } else if (!RegExp(r'^(?:[+0]9)?[0-9]{10,12}$')
-                                  .hasMatch(value!)) {
+                              if (value == '' ||
+                                  !RegExp(r'^(?:[+0]9)?[0-9]{10,12}$')
+                                      .hasMatch(value!)) {
                                 return 'Please enter valid phone number';
                               }
+                              return null;
                             }),
                           ),
                         ),
@@ -261,16 +392,14 @@ class _HomeState extends State<Home> {
                                     "username": user?.displayName,
                                     "usermail": user?.email,
                                     "userid": uid,
-                                    "address": addressController.text == ''
-                                        ? address
-                                        : addressController.text,
-                                    "phonenumber":
-                                        phoneNumberController.text == ''
-                                            ? phonenumber
-                                            : phoneNumberController.text,
-                                    "age": dropdownvalue ?? age
+                                    "address": addressController.text,
+                                    "phonenumber": phoneNumberController.text,
+                                    "age": dropdownvalue
                                   });
                                   snapshot();
+                                  setState(() {
+                                    usernotexists = false;
+                                  });
                                 }
                               },
                               child: Text(
@@ -281,136 +410,6 @@ class _HomeState extends State<Home> {
                       ],
                     )),
               ),
-              appBar: AppBar(
-                title: Text('Welcome'),
-                centerTitle: true,
-              ),
-            ),
-          ),
-        );
-      } else {
-        return MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.transparent,
-                        child: ClipOval(child: Image.network(userimage)),
-                      ),
-                      Text(userdname,
-                          style: TextStyle(color: Colors.black, fontSize: 30)),
-                      Container(
-                        margin: EdgeInsets.all(30),
-                        width: 400,
-                        height: 50,
-                        child: TextFormField(
-                          controller: addressController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Address',
-                            labelStyle:
-                                TextStyle(color: Colors.black, fontSize: 30),
-                          ),
-                          validator: ((value) {
-                            if (value == '') {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          }),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(30),
-                        width: 400,
-                        height: 50,
-                        child: TextFormField(
-                          controller: phoneNumberController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Phone Number',
-                            labelStyle:
-                                TextStyle(color: Colors.black, fontSize: 30),
-                          ),
-                          validator: ((value) {
-                            if (value == '' ||
-                                !RegExp(r'^(?:[+0]9)?[0-9]{10,12}$')
-                                    .hasMatch(value!)) {
-                              return 'Please enter valid phone number';
-                            }
-                            return null;
-                          }),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(30),
-                        width: 400,
-                        height: 50,
-                        child: InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: 'Age',
-                            labelStyle:
-                                TextStyle(color: Colors.black, fontSize: 30),
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.all(13),
-                          ),
-                          child: DropdownButton(
-                            value: dropdownvalue,
-                            isDense: true,
-                            isExpanded: true,
-                            elevation: 8,
-                            icon: const Icon(Icons.keyboard_arrow_down),
-                            items: items.map((String items) {
-                              return DropdownMenuItem(
-                                value: items,
-                                child: Text(items),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                dropdownvalue = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 100,
-                        height: 50,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                final User? user = auth.currentUser;
-                                final uid = user?.uid;
-                                FirebaseFirestore.instance
-                                    .collection('usersData')
-                                    .doc(uid)
-                                    .set({
-                                  "username": user?.displayName,
-                                  "usermail": user?.email,
-                                  "userid": uid,
-                                  "address": addressController.text,
-                                  "phonenumber": phoneNumberController.text,
-                                  "age": dropdownvalue
-                                });
-                                snapshot();
-                                setState(() {
-                                  usernotexists = false;
-                                });
-                              }
-                            },
-                            child: Text(
-                              'Submit',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                      )
-                    ],
-                  )),
             ),
             appBar: AppBar(
               title: Text('Welcome'),
